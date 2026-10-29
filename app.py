@@ -11,51 +11,72 @@ st.set_page_config(
     layout="wide"
 )
 
-# Kunci API Router9
+# Kunci API Router9 (diambil dari Secrets Streamlit Cloud atau .env lokal)
 ROUTER9_API_KEY = os.getenv("ROUTER9_API_KEY", "").strip()
 ROUTER9_URL = "https://api.router9.com/v1/chat/completions"
 
-# Definisi Meja Divisi & Persona Karyawan AI
+# Definisi 5 Divisi Lengkap dari Katalog Router9 Free Tier
 DIVISI = {
-    "Backend Engineer": {
+    "Lead Software Architect": {
+        "nama": "DeepSeek V4 Pro",
+        "model": "deepseek/deepseek-v4-pro",
+        "icon": "🧠",
+        "deskripsi": "Arsitektur data kompleks, logika bisnis tingkat lanjut, dan optimasi performa sistem.",
+        "system": (
+            "Anda adalah Principal Software Architect spesialis sistem absensi dan kinerja kantor. "
+            "Fokus tugas: merancang arsitektur sistem yang skalabel, relasi database, kalkulasi keterlambatan/lembur "
+            "yang kompleks, serta algoritma pemrosesan data presensi."
+        )
+    },
+    "Fast Backend Developer": {
         "nama": "DeepSeek V4 Flash",
         "model": "deepseek/deepseek-v4-flash",
         "icon": "⚙️",
-        "deskripsi": "Logika absensi, validasi GPS/geofencing, database, dan security.",
+        "deskripsi": "Eksekusi cepat endpoint API, fungsi validasi GPS/geofencing, dan skrip CRUD harian.",
         "system": (
-            "Anda adalah Senior Backend Developer spesialis sistem absensi kantor. "
-            "Fokus tugas Anda: merancang skema data, API endpoints, validasi jam masuk/pulang, "
-            "perhitungan keterlambatan/lembur, dan validasi radius GPS (geofencing). "
-            "Berikan kode yang aman, efisien, dan bersih."
+            "Anda adalah Senior Backend Developer yang fokus pada efisiensi dan kecepatan. "
+            "Tugas: membuat fungsi backend ringkas, validasi koordinat GPS radius kantor, "
+            "pengecekan toleransi jam masuk/pulang, dan integrasi API form absensi."
         )
     },
     "Frontend & CSS Architect": {
         "nama": "Qwen3 235B",
         "model": "qwen/qwen3-235b-a22b-2507",
         "icon": "🎨",
-        "deskripsi": "Tata letak dashboard, Tailwind/CSS responsif, dan interaktivitas komponen.",
+        "deskripsi": "Tata letak dashboard responsif (HP & Desktop), Tailwind CSS, Flexbox, dan Grid modern.",
         "system": (
             "Anda adalah Frontend Architect ahli CSS modern, Tailwind CSS, Flexbox, dan Grid. "
-            "Tugas Anda: membangun antarmuka web absensi yang bersih, rapi, responsif "
-            "(sempurna di HP dan monitor desktop), serta komponen interaktif (kartu profil, tabel absensi, tombol presensi)."
+            "Tugas: membangun antarmuka web absensi yang rapi, modern, responsif untuk layar smartphone staf, "
+            "serta komponen interaktif seperti kartu profil, tabel absensi, dan tombol presensi presisi."
         )
     },
     "UI/UX Inspector": {
         "nama": "MiniMax M3",
         "model": "minimax/minimax-m3",
         "icon": "👁️",
-        "deskripsi": "Audit visual, hierarki tipografi, kontras warna, dan pengalaman pengguna.",
+        "deskripsi": "Audit visual, hierarki tipografi, standar kontras WCAG, dan kemudahan navigasi pengguna.",
         "system": (
-            "Anda adalah Lead UI/UX Designer. Tugas Anda: mengevaluasi kenyamanan alur pengguna "
-            "pada web absensi kantor, memeriksa kontras warna (WCAG), memastikan tombol mudah ditekan di layar sentuh, "
-            "dan memberikan saran perbaikan visual micro-interaction."
+            "Anda adalah Lead UI/UX Designer. "
+            "Tugas: mengevaluasi kenyamanan alur pengguna pada web absensi kantor, memeriksa kontras warna, "
+            "memastikan ukuran tombol nyaman disentuh jari pada smartphone, serta memberikan saran micro-interaction."
+        )
+    },
+    "QA & Security Auditor": {
+        "nama": "GLM 5.2",
+        "model": "z-ai/glm-5.2",
+        "icon": "🛡️",
+        "deskripsi": "Audit celah keamanan, mitigasi manipulasi lokasi/fake GPS, dan uji skenario eror formulir.",
+        "system": (
+            "Anda adalah Lead QA & Cyber Security Auditor sistem aplikasi web kantor. "
+            "Tugas: memeriksa kerentanan kode backend/frontend, memastikan form aman dari manipulasi fake GPS, "
+            "mencegah kebocoran data presensi staf, dan menguji skenario input yang rusak (edge-cases)."
         )
     }
 }
 
 def panggil_karyawan(model_id: str, system_prompt: str, pesan_user: str) -> str:
     if not ROUTER9_API_KEY:
-        return "⚠️ Galat: Kunci API Router9 belum diatur di .env atau pengaturan."
+        return "⚠️ Galat: Kunci API Router9 belum terdeteksi. Masukkan API Key di bilah samping atau Secrets."
 
     headers = {
         "Authorization": f"Bearer {ROUTER9_API_KEY}",
@@ -78,35 +99,35 @@ def panggil_karyawan(model_id: str, system_prompt: str, pesan_user: str) -> str:
     except Exception as e:
         return f"Koneksi gagal: {str(e)}"
 
-# --- SIDEBAR: STATUS TIM ---
+# --- SIDEBAR: STATUS TIM KANTOR ---
 with st.sidebar:
     st.title("🏢 Divisi Kantor AI")
-    st.caption("Tim Pengembang Web Absensi Kantor")
-    
+    st.caption("5 Karyawan Pengembang Web Absensi & Kinerja")
     st.markdown("---")
+    
     for jabatan, info in DIVISI.items():
         st.markdown(f"**{info['icon']} {jabatan}**")
         st.caption(f"Model: `{info['nama']}`\n\n{info['deskripsi']}")
         st.markdown("---")
         
-    api_input = st.text_input("Ganti API Key Router9:", value=ROUTER9_API_KEY, type="password")
-    if api_input != ROUTER9_API_KEY:
+    api_input = st.text_input("Ganti API Key Router9 (Opsional):", value=ROUTER9_API_KEY, type="password")
+    if api_input and api_input != ROUTER9_API_KEY:
         ROUTER9_API_KEY = api_input
 
 # --- AREA UTAMA ---
-st.title("💼 Ruang Manajer: Instruksikan Karyawan AI")
-st.markdown("Ruang kerja portabel untuk membangun, menata CSS, dan memecahkan masalah website absensi kantor.")
+st.title("💼 Ruang Manajer: Rapat Tim Pengembang AI")
+st.markdown("Instruksikan 5 model AI sekaligus untuk merancang, mengode, dan mengaudit sistem absensi Anda.")
 
 mode_kerja = st.radio(
     "Pilih Format Kerja:",
-    ["Meja Spesifik (Konsultasi 1 Karyawan)", "Rapat Tim Penuh (3 Karyawan Menjawab Serentak)"],
+    ["Meja Spesifik (Konsultasi 1 Karyawan)", "Rapat Tim Penuh (5 Karyawan Menjawab Serentak)"],
     horizontal=True
 )
 
 instruksi = st.text_area(
-    "Instruksi Pekerjaan:",
+    "Instruksi Pekerjaan / Fitur yang Ingin Dibuat:",
     height=140,
-    placeholder="Misal: Buatkan komponen kartu absensi mobile-friendly dengan tombol 'Absen Masuk' yang menyala hijau saat di dalam radius kantor..."
+    placeholder="Misal: Buatkan modul verifikasi lokasi radius 50 meter dari kantor beserta kartu status absensi mobile-friendly..."
 )
 
 tombol_kirim = st.button("🚀 Kirim Instruksi ke Meja Kerja", type="primary", use_container_width=True)
@@ -120,41 +141,19 @@ if mode_kerja == "Meja Spesifik (Konsultasi 1 Karyawan)":
         with st.spinner(f"Sedang dikerjakan oleh {karyawan['nama']} ({pilihan_divisi})..."):
             jawaban = panggil_karyawan(karyawan["model"], karyawan["system"], instruksi)
             
-        st.markdown(f"### 📋 Hasil Kerja: {karyawan['icon']} {pilihan_divisi}")
+        st.markdown(f"### 📋 Hasil Kerja: {karyawan['icon']} {pilihan_divisi} (`{karyawan['nama']}`)")
         st.markdown(jawaban)
 
-# 2. MODE RAPAT TIM PENUH (MULTI-AGENT DASHBOARD)
+# 2. MODE RAPAT TIM PENUH (5 KOLOM PARALEL)
 else:
     if tombol_kirim and instruksi.strip():
-        st.markdown("### 📊 Hasil Rapat Tim Pengembang")
-        kol_backend, kol_frontend, kol_uiux = st.columns(3)
+        st.markdown("### 📊 Hasil Rapat Lengkap 5 Divisi")
+        kolom_tim = st.columns(len(DIVISI))
         
-        with kol_backend:
-            st.markdown(f"#### ⚙️ Backend (DeepSeek)")
-            with st.spinner("Merancang arsitektur & logika..."):
-                hasil_be = panggil_karyawan(
-                    DIVISI["Backend Engineer"]["model"],
-                    DIVISI["Backend Engineer"]["system"],
-                    instruksi
-                )
-            st.markdown(hasil_be)
-            
-        with kol_frontend:
-            st.markdown(f"#### 🎨 Frontend (Qwen3)")
-            with st.spinner("Menyusun HTML & Tailwind CSS..."):
-                hasil_fe = panggil_karyawan(
-                    DIVISI["Frontend & CSS Architect"]["model"],
-                    DIVISI["Frontend & CSS Architect"]["system"],
-                    instruksi
-                )
-            st.markdown(hasil_fe)
-            
-        with kol_uiux:
-            st.markdown(f"#### 👁️ UI/UX (MiniMax)")
-            with st.spinner("Mengaudit visual & kenyamanan alur..."):
-                hasil_ux = panggil_karyawan(
-                    DIVISI["UI/UX Inspector"]["model"],
-                    DIVISI["UI/UX Inspector"]["system"],
-                    instruksi
-                )
-            st.markdown(hasil_ux)
+        for idx, (jabatan, info) in enumerate(DIVISI.items()):
+            with kolom_tim[idx]:
+                st.markdown(f"#### {info['icon']} {info['nama']}")
+                st.caption(f"**{jabatan}**")
+                with st.spinner(f"Menyusun respons..."):
+                    hasil = panggil_karyawan(info["model"], info["system"], instruksi)
+                st.markdown(hasil)
