@@ -366,6 +366,11 @@ mode_kerja = st.radio(
     horizontal=True
 )
 
+# Tampilkan pilihan karyawan tepat di bawah radio button jika mode Meja Spesifik
+pilihan_divisi = None
+if mode_kerja == "Meja Spesifik (Konsultasi 1 Karyawan)":
+    pilihan_divisi = st.selectbox("Pilih Karyawan yang Bertugas:", list(DIVISI.keys()))
+
 instruksi = st.text_area(
     "Instruksi Pekerjaan / Fitur yang Ingin Dibuat:",
     height=140,
@@ -374,10 +379,8 @@ instruksi = st.text_area(
 
 tombol_kirim = st.button("🚀 Kirim Instruksi ke Meja Kerja", type="primary", use_container_width=True)
 
-# 1. MODE MEJA SPESIFIK
+# 1. EKSEKUSI MODE MEJA SPESIFIK
 if mode_kerja == "Meja Spesifik (Konsultasi 1 Karyawan)":
-    pilihan_divisi = st.selectbox("Pilih Karyawan yang Bertugas:", list(DIVISI.keys()))
-    
     if tombol_kirim and instruksi.strip():
         karyawan = DIVISI[pilihan_divisi]
         
@@ -393,7 +396,7 @@ if mode_kerja == "Meja Spesifik (Konsultasi 1 Karyawan)":
         st.markdown(f"### 📋 Hasil Kerja: {karyawan['icon']} {pilihan_divisi} (`{karyawan['nama']}`)")
         st.markdown(jawaban)
 
-# 2. MODE RAPAT TIM PENUH (5 KOLOM PARALEL)
+# 2. EKSEKUSI MODE RAPAT TIM PENUH
 else:
     if tombol_kirim and instruksi.strip():
         with wadah_animasi:
