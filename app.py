@@ -12,14 +12,14 @@ st.set_page_config(
     layout="wide"
 )
 
-# Kunci API Router9 (Mendukung st.secrets di Cloud dan .env di Lokal)
+# Kunci API Router9
 API_KEY_AWAL = st.secrets.get("ROUTER9_API_KEY", os.getenv("ROUTER9_API_KEY", "")).strip()
 ROUTER9_URL = "https://api.router9.com/v1/chat/completions"
 
 if "router9_api_key" not in st.session_state:
     st.session_state["router9_api_key"] = API_KEY_AWAL
 
-# Definisi 5 Divisi Lengkap dari Katalog Router9 Free Tier
+# Definisi 5 Divisi AI
 DIVISI = {
     "Lead Software Architect": {
         "id": "ds_pro",
@@ -27,7 +27,7 @@ DIVISI = {
         "model": "deepseek/deepseek-v4-pro",
         "icon": "🧠",
         "santai_icon": "📖",
-        "santai_text": "Membaca Buku Manual",
+        "santai_text": "Membaca Buku",
         "deskripsi": "Arsitektur data kompleks, logika bisnis tingkat lanjut, dan optimasi performa sistem.",
         "system": (
             "Anda adalah Principal Software Architect spesialis sistem absensi dan kinerja kantor. "
@@ -41,7 +41,7 @@ DIVISI = {
         "model": "deepseek/deepseek-v4-flash",
         "icon": "⚙️",
         "santai_icon": "☕",
-        "santai_text": "Menyeruput Kopi Panas",
+        "santai_text": "Menyeruput Kopi",
         "deskripsi": "Eksekusi cepat endpoint API, fungsi validasi GPS/geofencing, dan skrip CRUD harian.",
         "system": (
             "Anda adalah Senior Backend Developer yang fokus pada efisiensi dan kecepatan. "
@@ -55,7 +55,7 @@ DIVISI = {
         "model": "qwen/qwen3-235b-a22b-2507",
         "icon": "🎨",
         "santai_icon": "🪑",
-        "santai_text": "Putar Kursi & Pulpen",
+        "santai_text": "Putar Kursi",
         "deskripsi": "Tata letak dashboard responsif (HP & Desktop), Tailwind CSS, Flexbox, dan Grid modern.",
         "system": (
             "Anda adalah Frontend Architect ahli CSS modern, Tailwind CSS, Flexbox, dan Grid. "
@@ -69,7 +69,7 @@ DIVISI = {
         "model": "minimax/minimax-m3",
         "icon": "👁️",
         "santai_icon": "🍩",
-        "santai_text": "Ngemil di Bean Bag",
+        "santai_text": "Ngemil Donat",
         "deskripsi": "Audit visual, hierarki tipografi, standar kontras WCAG, dan kemudahan navigasi pengguna.",
         "system": (
             "Anda adalah Lead UI/UX Designer. "
@@ -83,7 +83,7 @@ DIVISI = {
         "model": "z-ai/glm-5.2",
         "icon": "🛡️",
         "santai_icon": "🎮",
-        "santai_text": "Main PS di Lounge",
+        "santai_text": "Bermain PS",
         "deskripsi": "Audit celah keamanan, mitigasi manipulasi lokasi/fake GPS, dan uji skenario eror formulir.",
         "system": (
             "Anda adalah Lead QA & Cyber Security Auditor sistem aplikasi web kantor. "
@@ -93,13 +93,8 @@ DIVISI = {
     }
 }
 
-# --- KOMPONEN ANIMASI KANTOR VIRTUAL (RINGAN & HEMAT KUOTA) ---
+# --- KOMPONEN ANIMASI KANTOR VIRTUAL ---
 def render_kantor_animasi(karyawan_sedang_kerja=None):
-    """
-    Menampilkan animasi suasana kantor 5 karyawan.
-    - Santai (Idle): ada yang ngopi, baca buku, main PS, ngemil, dan goyang kursi.
-    - Kerja (Working): yang ditugaskan fokus mengetik cepat, lainnya memperhatikan (👀).
-    """
     mode_kerja = karyawan_sedang_kerja is not None
     is_semua = (karyawan_sedang_kerja == "SEMUA")
 
@@ -118,7 +113,7 @@ def render_kantor_animasi(karyawan_sedang_kerja=None):
         else:
             css_state = "watching"
             avatar_content = "👀"
-            status_text = "Memperhatikan"
+            status_text = "Nonton"
 
         kartu_karakter_html += f"""
         <div class="station {css_state}">
@@ -128,7 +123,6 @@ def render_kantor_animasi(karyawan_sedang_kerja=None):
           </div>
           <div class="desk">
             <div class="monitor"></div>
-            <div class="keyboard"></div>
           </div>
           <div class="status-bubble">{status_text}</div>
           <div class="char-name">{info['nama'].split()[0]}</div>
@@ -152,41 +146,29 @@ def render_kantor_animasi(karyawan_sedang_kerja=None):
       .office-stage {{
         position: relative;
         width: 100%;
-        height: 240px;
+        height: 230px;
         background: linear-gradient(180deg, #161b22 0%, #0d1117 100%);
         border: 1px solid #30363d;
         border-radius: 12px;
-        box-shadow: inset 0 0 30px rgba(0,0,0,0.5);
         display: flex;
         justify-content: space-around;
         align-items: flex-end;
-        padding-bottom: 22px;
+        padding-bottom: 20px;
       }}
       .lantai {{
         position: absolute;
         bottom: 0;
         width: 100%;
-        height: 26px;
+        height: 24px;
         background: repeating-linear-gradient(90deg, #21262d, #21262d 48px, #1c2128 48px, #1c2128 96px);
         border-top: 2px solid #30363d;
         z-index: 1;
       }}
-      .decor-window {{
-        position: absolute;
-        top: 12px;
-        left: 20px;
-        width: 70px;
-        height: 38px;
-        border: 2px solid #30363d;
-        border-radius: 4px;
-        background: #090d13;
-        opacity: 0.6;
-      }}
       .decor-plant {{
         position: absolute;
-        bottom: 26px;
-        left: 12px;
-        font-size: 26px;
+        bottom: 24px;
+        left: 14px;
+        font-size: 24px;
         z-index: 2;
       }}
       .station {{
@@ -196,38 +178,36 @@ def render_kantor_animasi(karyawan_sedang_kerja=None):
         align-items: center;
         z-index: 2;
         width: 18%;
-        transition: transform 0.3s ease;
       }}
       .avatar-wrap {{
         position: relative;
-        width: 58px;
-        height: 58px;
+        width: 54px;
+        height: 54px;
         border-radius: 50%;
         background: #21262d;
         border: 2px solid #388bfd;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 26px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        font-size: 24px;
       }}
       .job-badge {{
         position: absolute;
         bottom: -2px;
         right: -2px;
-        font-size: 13px;
+        font-size: 12px;
         background: #161b22;
         border-radius: 50%;
         border: 1px solid #30363d;
-        width: 20px;
-        height: 20px;
+        width: 18px;
+        height: 18px;
         display: flex;
         align-items: center;
         justify-content: center;
       }}
       .desk {{
-        width: 84px;
-        height: 12px;
+        width: 76px;
+        height: 10px;
         background: #30363d;
         border-radius: 3px;
         margin-top: 4px;
@@ -235,8 +215,8 @@ def render_kantor_animasi(karyawan_sedang_kerja=None):
       }}
       .monitor {{
         position: absolute;
-        top: -15px;
-        left: 31px;
+        top: -14px;
+        left: 27px;
         width: 22px;
         height: 14px;
         background: #0d1117;
@@ -245,7 +225,7 @@ def render_kantor_animasi(karyawan_sedang_kerja=None):
       }}
       .status-bubble {{
         font-size: 10px;
-        margin-top: 5px;
+        margin-top: 4px;
         background: #21262d;
         border: 1px solid #30363d;
         padding: 2px 6px;
@@ -265,10 +245,10 @@ def render_kantor_animasi(karyawan_sedang_kerja=None):
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        max-width: 90px;
+        max-width: 85px;
       }}
 
-      /* ANIMASI SANTAI (IDLE) */
+      /* ANIMASI SANTAI */
       .idle .avatar-wrap {{
         animation: nafas 3s infinite ease-in-out;
       }}
@@ -277,10 +257,10 @@ def render_kantor_animasi(karyawan_sedang_kerja=None):
         50% {{ transform: translateY(-4px); }}
       }}
 
-      /* ANIMASI SAAT BEKERJA (WORKING) */
+      /* ANIMASI BEKERJA */
       .working .avatar-wrap {{
         border-color: #3fb950 !important;
-        box-shadow: 0 0 16px rgba(63, 185, 80, 0.75);
+        box-shadow: 0 0 14px rgba(63, 185, 80, 0.7);
         animation: mengetik 0.2s infinite alternate !important;
       }}
       .working .monitor {{
@@ -298,7 +278,7 @@ def render_kantor_animasi(karyawan_sedang_kerja=None):
         100% {{ transform: translateY(-3px) rotate(1deg); }}
       }}
 
-      /* ANIMASI MEMPERHATIKAN TEMAN (WATCHING) */
+      /* ANIMASI MENONTON */
       .watching .avatar-wrap {{
         filter: grayscale(0.2);
         animation: intip 2s infinite ease-in-out !important;
@@ -309,13 +289,12 @@ def render_kantor_animasi(karyawan_sedang_kerja=None):
       }}
       @keyframes intip {{
         0%, 100% {{ transform: scale(0.96); }}
-        50% {{ transform: scale(1.02) translateX(3px); }}
+        50% {{ transform: scale(1.02) translateX(2px); }}
       }}
     </style>
     </head>
     <body>
       <div class="office-stage">
-        <div class="decor-window"></div>
         <div class="decor-plant">🪴</div>
         <div class="lantai"></div>
         {kartu_karakter_html}
@@ -323,7 +302,7 @@ def render_kantor_animasi(karyawan_sedang_kerja=None):
     </body>
     </html>
     """
-    components.html(html_code, height=255)
+    components.html(html_code, height=245)
 
 def panggil_karyawan(model_id: str, system_prompt: str, pesan_user: str) -> str:
     api_key = st.session_state.get("router9_api_key", "").strip() or API_KEY_AWAL
@@ -390,4 +369,46 @@ mode_kerja = st.radio(
 instruksi = st.text_area(
     "Instruksi Pekerjaan / Fitur yang Ingin Dibuat:",
     height=140,
-    placeholder="Misal: Buatkan
+    placeholder="Ketik instruksi pekerjaan Anda di sini..."
+)
+
+tombol_kirim = st.button("🚀 Kirim Instruksi ke Meja Kerja", type="primary", use_container_width=True)
+
+# 1. MODE MEJA SPESIFIK
+if mode_kerja == "Meja Spesifik (Konsultasi 1 Karyawan)":
+    pilihan_divisi = st.selectbox("Pilih Karyawan yang Bertugas:", list(DIVISI.keys()))
+    
+    if tombol_kirim and instruksi.strip():
+        karyawan = DIVISI[pilihan_divisi]
+        
+        with wadah_animasi:
+            render_kantor_animasi(pilihan_divisi)
+            
+        with st.spinner(f"Sedang dikerjakan oleh {karyawan['nama']} ({pilihan_divisi})..."):
+            jawaban = panggil_karyawan(karyawan["model"], karyawan["system"], instruksi)
+            
+        with wadah_animasi:
+            render_kantor_animasi(None)
+            
+        st.markdown(f"### 📋 Hasil Kerja: {karyawan['icon']} {pilihan_divisi} (`{karyawan['nama']}`)")
+        st.markdown(jawaban)
+
+# 2. MODE RAPAT TIM PENUH (5 KOLOM PARALEL)
+else:
+    if tombol_kirim and instruksi.strip():
+        with wadah_animasi:
+            render_kantor_animasi("SEMUA")
+            
+        st.markdown("### 📊 Hasil Rapat Lengkap 5 Divisi")
+        kolom_tim = st.columns(len(DIVISI))
+        
+        for idx, (jabatan, info) in enumerate(DIVISI.items()):
+            with kolom_tim[idx]:
+                st.markdown(f"#### {info['icon']} {info['nama']}")
+                st.caption(f"**{jabatan}**")
+                with st.spinner("Menyusun respons..."):
+                    hasil = panggil_karyawan(info["model"], info["system"], instruksi)
+                st.markdown(hasil)
+                
+        with wadah_animasi:
+            render_kantor_animasi(None)
